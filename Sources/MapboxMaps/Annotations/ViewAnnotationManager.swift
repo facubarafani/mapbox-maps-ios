@@ -64,9 +64,15 @@ public final class ViewAnnotationManager {
 
     /// The complete list of annotations associated with the receiver.
     public var annotations: [UIView: ViewAnnotationOptions] {
-        idsByView.compactMapValues { [mapboxMap] id in
-            try? mapboxMap.options(forViewAnnotationWithId: id)
+        var result: [UIView: ViewAnnotationOptions] = [:]
+        
+        for (view, id) in idsByView {
+            if let options = try? mapboxMap.options(forViewAnnotationWithId: id) {
+                result[view] = options
+            }
         }
+        
+        return result
     }
 
     internal init(containerView: UIView, mapboxMap: MapboxMapProtocol) {
